@@ -1,0 +1,5 @@
+outs:
+- md5: e853acd3894b3848ac9667f291c38343
+  size: 189162
+  hash: md5
+  path: credit_risk_model.joblib

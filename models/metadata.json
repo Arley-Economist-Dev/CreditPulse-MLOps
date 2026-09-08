@@ -1,0 +1,29 @@
+{
+  "model_name": "credit_risk_hist_gradient_boosting",
+  "version": "1.0.0",
+  "created_at_utc": "2026-09-08T20:07:36.525032+00:00",
+  "framework": "scikit-learn",
+  "features": {
+    "numeric": [
+      "age",
+      "annual_income",
+      "loan_amount",
+      "credit_score",
+      "debt_to_income_ratio"
+    ],
+    "categorical": [
+      "loan_intent",
+      "employment_status"
+    ],
+    "boolean": [
+      "historical_default"
+    ]
+  },
+  "metrics": {
+    "roc_auc": 0.9096,
+    "f1_score": 0.834,
+    "precision": 0.8681,
+    "recall": 0.8026,
+    "accuracy": 0.8342
+  }
+}
