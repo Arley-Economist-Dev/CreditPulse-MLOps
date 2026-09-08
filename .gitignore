@@ -1,0 +1,41 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+env/
+venv/
+ENV/
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# Testing & Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# MLOps & Machine Learning artifacts (DVC will track these)
+data/raw/*
+data/processed/*
+models/*.joblib
+models/*.pkl
+models/*.onnx
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!models/.gitkeep
+
+# DVC local configuration & cache
+.dvc/cache
+.dvc/tmp
+.dvc/config.local
+
+# IDEs & System
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
