@@ -1,0 +1,28 @@
+# Git & Environments
+.git/
+.gitignore
+.venv/
+env/
+venv/
+
+# Caches & Bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+.ruff_cache/
+
+# DVC internals & local data
+.dvc/cache/
+.dvc/tmp/
+.dvc/config.local
+data/
+
+# Documentation & IDEs
+.vscode/
+.idea/
+*.md
+tests/
+scripts/
