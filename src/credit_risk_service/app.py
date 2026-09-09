@@ -145,7 +145,12 @@ async def predict_credit_risk(request: CreditRiskRequest) -> CreditRiskResponse:
     )
 
 
-# Mount static dashboard frontend (accessible at http://localhost:8000/)
-frontend_dir = Path(__file__).resolve().parent.parent.parent / "frontend"
-if frontend_dir.exists():
+# Mount static dashboard frontend (accessible at root /)
+frontend_candidates = [
+    Path.cwd() / "frontend",
+    Path("/app/frontend"),
+    Path(__file__).resolve().parent.parent.parent / "frontend",
+]
+frontend_dir = next((p for p in frontend_candidates if p.exists()), None)
+if frontend_dir:
     app.mount("/", StaticFiles(directory=str(frontend_dir), html=True), name="frontend")

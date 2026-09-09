@@ -5,6 +5,19 @@ from pathlib import Path
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
+def _resolve_model_dir() -> Path:
+    """Resolve models directory across local, editable, and container environments."""
+    candidates = [
+        Path.cwd() / "models",
+        Path("/app/models"),
+        Path(__file__).resolve().parent.parent.parent / "models",
+    ]
+    for c in candidates:
+        if c.exists():
+            return c
+    return Path("models")
+
+
 class Settings(BaseSettings):
     """Runtime service configuration loaded from environment or defaults."""
 
@@ -20,7 +33,7 @@ class Settings(BaseSettings):
     log_level: str = "INFO"
 
     # Model parameters
-    model_dir: Path = Path(__file__).resolve().parent.parent.parent / "models"
+    model_dir: Path = _resolve_model_dir()
     model_filename: str = "credit_risk_model.joblib"
     decision_threshold: float = 0.35  # Approvals require default_probability < threshold
 

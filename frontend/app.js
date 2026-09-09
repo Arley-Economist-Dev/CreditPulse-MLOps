@@ -80,8 +80,12 @@
   const presetStandard = document.getElementById("presetStandard");
   const presetSubprime = document.getElementById("presetSubprime");
 
-  // App State
-  let apiBaseUrl = localStorage.getItem("creditpulse_api") || "http://localhost:8000";
+  // App State - Smart Environment Detection
+  const defaultApi = window.location.hostname.includes("github.io")
+    ? "https://creditpulse-mlops.onrender.com"
+    : (window.location.origin.includes("onrender.com") ? window.location.origin : "http://localhost:8000");
+
+  let apiBaseUrl = localStorage.getItem("creditpulse_api") || defaultApi;
   let isBackendOnline = false;
   let isDemoMode = false;
   let activeTab = "response";
