@@ -24,5 +24,6 @@ data/
 .vscode/
 .idea/
 *.md
+!README.md
 tests/
 
