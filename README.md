@@ -3,7 +3,8 @@
 # 💳 Real-Time Credit Risk Inference Service
 ### Production-Grade MLOps Pipeline: Strict Contracts, Artifact Versioning, Multi-Level Testing & Hardened Containerization
 
-[![CI Pipeline](https://github.com/your-username/credit-risk-service/actions/workflows/ci.yml/badge.svg)](https://github.com/your-username/credit-risk-service/actions)
+[![CI Pipeline](https://github.com/Arley-Economist-Dev/CreditPulse-MLOps/actions/workflows/ci.yml/badge.svg)](https://github.com/Arley-Economist-Dev/CreditPulse-MLOps/actions)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-6366f1?style=flat&logo=github)](https://arley-economist-dev.github.io/CreditPulse-MLOps/)
 [![Python Version](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue.svg)](https://www.python.org/)
 [![Code Style: Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![Test Coverage](https://img.shields.io/badge/coverage-92%25-brightgreen.svg)](https://pytest.org/)
@@ -141,8 +142,8 @@ flowchart TD
 ### 2. Local Setup
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/credit-risk-service.git
-cd credit-risk-service
+git clone https://github.com/Arley-Economist-Dev/CreditPulse-MLOps.git
+cd CreditPulse-MLOps
 
 # Create and activate virtual environment
 python -m venv .venv
