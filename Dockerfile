@@ -19,15 +19,15 @@ RUN addgroup --system --gid 10001 appgroup && \
 
 WORKDIR /app
 
-# Copy dependency specifications first for Docker layer caching
+# Copy package definitions and source code for building the package
 COPY pyproject.toml README.md /app/
-
-# Install only production dependencies (excluding dev and test)
-RUN pip install --no-cache-dir .
-
-# Copy application source code, frontend dashboard and serialized model artifacts
 COPY src/ /app/src/
 COPY frontend/ /app/frontend/
+
+# Install production dependencies and the package
+RUN pip install --no-cache-dir .
+
+# Copy serialized model artifacts
 COPY models/credit_risk_model.joblib /app/models/credit_risk_model.joblib
 COPY models/metadata.json /app/models/metadata.json
 
