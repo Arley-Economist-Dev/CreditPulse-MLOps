@@ -19,17 +19,19 @@ RUN addgroup --system --gid 10001 appgroup && \
 
 WORKDIR /app
 
-# Copy package definitions and source code for building the package
+# Copy package definitions, source code, and assets
 COPY pyproject.toml README.md /app/
 COPY src/ /app/src/
 COPY frontend/ /app/frontend/
+COPY scripts/ /app/scripts/
+COPY models/ /app/models/
 
 # Install production dependencies and the package
 RUN pip install --no-cache-dir .
 
-# Copy serialized model artifacts
-COPY models/credit_risk_model.joblib /app/models/credit_risk_model.joblib
-COPY models/metadata.json /app/models/metadata.json
+# Ensure model binary artifact is present in the image
+# If the heavy binary was not stored in Git due to DVC, train baseline deterministically
+RUN python scripts/train_baseline.py
 
 # Enforce secure ownership and switch to non-root user
 RUN chown -R appuser:appgroup /app
@@ -37,9 +39,9 @@ USER appuser
 
 EXPOSE 8000
 
-# Native healthcheck using Python standard library (no curl/wget bloat needed)
+# Native healthcheck using Python standard library (supports dynamic $PORT)
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD python -c "import urllib.request, sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8000/health').getcode() == 200 else 1)"
+    CMD python -c "import urllib.request, sys, os; port = os.environ.get('PORT', '8000'); sys.exit(0 if urllib.request.urlopen(f'http://localhost:{port}/health').getcode() == 200 else 1)"
 
-# Production ASGI server launch
-CMD ["uvicorn", "credit_risk_service.app:app", "--host", "0.0.0.0", "--port", "8000"]
+# Production ASGI server launch supporting Render dynamic $PORT
+CMD ["sh", "-c", "uvicorn credit_risk_service.app:app --host 0.0.0.0 --port ${PORT:-8000}"]
