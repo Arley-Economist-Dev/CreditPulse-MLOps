@@ -6,9 +6,12 @@ import logging
 import time
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, Request, Response, status
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 
 from credit_risk_service.config import settings
 from credit_risk_service.model import CreditRiskModelWrapper
@@ -53,6 +56,16 @@ app = FastAPI(
         "Built with FastAPI, Pydantic v2, and scikit-learn."
     ),
     lifespan=lifespan,
+)
+
+# Enable CORS for local development and GitHub Pages static frontend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+    expose_headers=["X-Process-Time-Ms"],
 )
 
 
@@ -130,3 +143,9 @@ async def predict_credit_risk(request: CreditRiskRequest) -> CreditRiskResponse:
         model_version=model_wrapper.version,
         latency_ms=latency_ms,
     )
+
+
+# Mount static dashboard frontend (accessible at http://localhost:8000/)
+frontend_dir = Path(__file__).resolve().parent.parent.parent / "frontend"
+if frontend_dir.exists():
+    app.mount("/", StaticFiles(directory=str(frontend_dir), html=True), name="frontend")

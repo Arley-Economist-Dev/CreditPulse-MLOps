@@ -25,8 +25,9 @@ COPY pyproject.toml README.md /app/
 # Install only production dependencies (excluding dev and test)
 RUN pip install --no-cache-dir .
 
-# Copy application source code and serialized model artifacts
+# Copy application source code, frontend dashboard and serialized model artifacts
 COPY src/ /app/src/
+COPY frontend/ /app/frontend/
 COPY models/credit_risk_model.joblib /app/models/credit_risk_model.joblib
 COPY models/metadata.json /app/models/metadata.json
 

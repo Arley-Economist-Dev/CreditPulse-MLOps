@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CreditPulse | Real-Time MLOps Credit Risk Simulator</title>
+  <meta name="description" content="Production-grade real-time credit risk inference dashboard with live latency profiling, contract validation, and what-if sensitivity analysis.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Background Glow Accents -->
+  <div class="glow-sphere glow-1"></div>
+  <div class="glow-sphere glow-2"></div>
+
+  <!-- Header / Navigation -->
+  <header class="app-header">
+    <div class="brand">
+      <div class="logo-badge">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+        </svg>
+      </div>
+      <div>
+        <h1 class="brand-title">CreditPulse <span class="brand-tag">MLOps AI</span></h1>
+        <p class="brand-subtitle">Real-Time Risk Scoring & Latency Profiling</p>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <!-- Backend Status Indicator -->
+      <div class="backend-pill" id="backendStatusPill">
+        <span class="status-dot" id="statusDot"></span>
+        <span class="status-text" id="statusText">Checking Backend...</span>
+      </div>
+
+      <!-- Endpoint Settings Button -->
+      <button class="btn btn-secondary btn-sm" id="btnSettings" title="Configure API Endpoint">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+        <span id="endpointLabel">API: localhost:8000</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Quick Persona Presets -->
+  <section class="presets-bar">
+    <span class="presets-label">Quick Test Personas:</span>
+    <div class="preset-buttons">
+      <button class="preset-btn" id="presetPrime" data-preset="prime">
+        <span class="preset-icon">🌟</span>
+        <div>
+          <span class="preset-name">Prime Applicant</span>
+          <span class="preset-desc">$95k inc &bull; 790 FICO &bull; Low Debt</span>
+        </div>
+      </button>
+      <button class="preset-btn" id="presetStandard" data-preset="standard">
+        <span class="preset-icon">⚖️</span>
+        <div>
+          <span class="preset-name">Standard Applicant</span>
+          <span class="preset-desc">$55k inc &bull; 680 FICO &bull; Fair Debt</span>
+        </div>
+      </button>
+      <button class="preset-btn" id="presetSubprime" data-preset="subprime">
+        <span class="preset-icon">⚠️</span>
+        <div>
+          <span class="preset-name">Subprime / High-Risk</span>
+          <span class="preset-desc">$22k inc &bull; 490 FICO &bull; Prior Default</span>
+        </div>
+      </button>
+    </div>
+  </section>
+
+  <!-- Main Grid Layout -->
+  <main class="main-container">
+    <!-- Left Column: Input Form -->
+    <section class="card form-card">
+      <div class="card-header">
+        <h2 class="card-title">Applicant Financial Profile</h2>
+        <div class="auto-eval-wrapper">
+          <label class="switch-label" for="autoEvalToggle">
+            <input type="checkbox" id="autoEvalToggle" checked>
+            <span class="switch-slider"></span>
+            <span class="switch-text">Instant Inference</span>
+          </label>
+        </div>
+      </div>
+
+      <form id="creditForm" novalidate>
+        <!-- Applicant ID -->
+        <div class="form-group applicant-id-group">
+          <label for="applicantId">Applicant Reference ID</label>
+          <div class="input-with-button">
+            <input type="text" id="applicantId" name="applicant_id" value="app_98234" required pattern="^[a-zA-Z0-9_-]+$">
+            <button type="button" class="btn btn-icon" id="btnRandomId" title="Generate New ID">🎲</button>
+          </div>
+        </div>
+
+        <!-- Age Input & Slider -->
+        <div class="form-group">
+          <div class="field-header">
+            <label for="ageInput">Age (Years)</label>
+            <span class="field-badge" id="ageValDisplay">34 yrs</span>
+          </div>
+          <div class="range-dual">
+            <input type="range" id="ageSlider" min="18" max="100" value="34" step="1">
+            <input type="number" id="ageInput" min="18" max="100" value="34">
+          </div>
+        </div>
+
+        <!-- Annual Income Input & Slider -->
+        <div class="form-group">
+          <div class="field-header">
+            <label for="incomeInput">Annual Gross Income ($ USD)</label>
+            <span class="field-badge" id="incomeValDisplay">$65,000</span>
+          </div>
+          <div class="range-dual">
+            <input type="range" id="incomeSlider" min="15000" max="300000" value="65000" step="1000">
+            <input type="number" id="incomeInput" min="1000" max="10000000" value="65000" step="500">
+          </div>
+        </div>
+
+        <!-- Loan Amount Input & Slider -->
+        <div class="form-group">
+          <div class="field-header">
+            <label for="loanInput">Requested Loan Principal ($ USD)</label>
+            <span class="field-badge" id="loanValDisplay">$15,000</span>
+          </div>
+          <div class="range-dual">
+            <input type="range" id="loanSlider" min="1000" max="100000" value="15000" step="500">
+            <input type="number" id="loanInput" min="500" max="1000000" value="15000" step="500">
+          </div>
+        </div>
+
+        <!-- FICO Credit Score Input & Slider -->
+        <div class="form-group">
+          <div class="field-header">
+            <label for="creditScoreInput">FICO Credit Score (300 - 850)</label>
+            <span class="score-pill" id="scoreTierPill">Good (710)</span>
+          </div>
+          <div class="range-dual">
+            <input type="range" id="creditScoreSlider" min="300" max="850" value="710" step="5">
+            <input type="number" id="creditScoreInput" min="300" max="850" value="710">
+          </div>
+        </div>
+
+        <!-- Debt to Income (DTI) Ratio -->
+        <div class="form-group">
+          <div class="field-header">
+            <label for="dtiInput">Debt-to-Income (DTI) Ratio</label>
+            <span class="field-badge" id="dtiValDisplay">0.23</span>
+          </div>
+          <div class="range-dual">
+            <input type="range" id="dtiSlider" min="0.0" max="3.0" value="0.23" step="0.01">
+            <input type="number" id="dtiInput" min="0.0" max="5.0" value="0.23" step="0.01">
+          </div>
+        </div>
+
+        <!-- Grid for Categoricals -->
+        <div class="form-row">
+          <div class="form-group col-6">
+            <label for="loanIntentSelect">Loan Intent</label>
+            <select id="loanIntentSelect" name="loan_intent">
+              <option value="debt_consolidation" selected>Debt Consolidation</option>
+              <option value="personal">Personal</option>
+              <option value="education">Education</option>
+              <option value="medical">Medical</option>
+              <option value="venture">Venture / Business</option>
+              <option value="home_improvement">Home Improvement</option>
+            </select>
+          </div>
+
+          <div class="form-group col-6">
+            <label for="employmentSelect">Employment Status</label>
+            <select id="employmentSelect" name="employment_status">
+              <option value="employed" selected>Employed</option>
+              <option value="self_employed">Self Employed</option>
+              <option value="unemployed">Unemployed</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Historical Default Switch -->
+        <div class="form-group toggle-box">
+          <div class="toggle-text">
+            <span class="toggle-title">Historical Default Record</span>
+            <span class="toggle-subtitle">Has applicant previously defaulted on any loan obligation?</span>
+          </div>
+          <label class="switch-label" for="defaultToggle">
+            <input type="checkbox" id="defaultToggle">
+            <span class="switch-slider danger"></span>
+          </label>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary btn-block" id="btnEvaluate">
+          <span class="btn-icon">⚡</span>
+          <span>Score Application</span>
+        </button>
+      </form>
+    </section>
+
+    <!-- Right Column: Inference Results & MLOps Telemetry -->
+    <section class="results-container">
+      <!-- Main Decision Hero Card -->
+      <div class="card decision-card" id="decisionCard">
+        <div class="decision-header">
+          <span class="sub-label">Automated Underwriting Decision</span>
+          <span class="risk-badge" id="riskTierBadge">LOW RISK</span>
+        </div>
+
+        <!-- Radial Gauge Meter -->
+        <div class="gauge-container">
+          <svg class="gauge-svg" viewBox="0 0 200 120">
+            <!-- Background Arc -->
+            <path class="gauge-bg" d="M 20 110 A 80 80 0 0 1 180 110" fill="none" stroke-width="16" stroke-linecap="round"/>
+            <!-- Animated Value Arc -->
+            <path class="gauge-fill" id="gaugeFill" d="M 20 110 A 80 80 0 0 1 180 110" fill="none" stroke-width="16" stroke-linecap="round" stroke-dasharray="251.2" stroke-dashoffset="230"/>
+          </svg>
+          <div class="gauge-center">
+            <span class="gauge-val" id="probPercent">3.1%</span>
+            <span class="gauge-sub">Default Probability</span>
+          </div>
+        </div>
+
+        <!-- Big Decision Pill -->
+        <div class="decision-banner approved" id="decisionBanner">
+          <span class="decision-icon" id="decisionIcon">✓</span>
+          <span class="decision-text" id="decisionText">APPLICATION APPROVED</span>
+        </div>
+
+        <p class="decision-summary" id="decisionSummary">
+          The applicant demonstrates solid creditworthiness. Probability of default (3.1%) is well below the operational approval threshold of 35.0%.
+        </p>
+
+        <!-- Live Telemetry Strip -->
+        <div class="telemetry-strip">
+          <div class="telemetry-item">
+            <span class="telemetry-label">Inference Latency</span>
+            <span class="telemetry-val highlight" id="latencyVal">4.12 ms</span>
+          </div>
+          <div class="telemetry-item">
+            <span class="telemetry-label">Model Lineage</span>
+            <span class="telemetry-val" id="modelVersionVal">v1.0.0 (DVC)</span>
+          </div>
+          <div class="telemetry-item">
+            <span class="telemetry-label">Decision Threshold</span>
+            <span class="telemetry-val">&lt; 35.0%</span>
+          </div>
+          <div class="telemetry-item">
+            <span class="telemetry-label">Validation Engine</span>
+            <span class="telemetry-val" id="engineVal">Pydantic v2 Edge</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- What-If Sensitivity Lab (Demonstrates Monotonicity Tests) -->
+      <div class="card lab-card">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">What-If Sensitivity Lab</h3>
+            <p class="card-subtitle">Live validation of behavioural & metamorphic model monotonicity</p>
+          </div>
+          <span class="tag-badge">Phase 4 Tests</span>
+        </div>
+
+        <div class="what-if-grid">
+          <button type="button" class="what-if-btn" id="btnBoostIncome">
+            <span class="what-if-icon">📈</span>
+            <div class="what-if-info">
+              <span class="what-if-title">+ $25k Annual Income</span>
+              <span class="what-if-hint">Monotonicity: Risk must decrease or remain constant</span>
+            </div>
+          </button>
+
+          <button type="button" class="what-if-btn" id="btnBoostScore">
+            <span class="what-if-icon">🎯</span>
+            <div class="what-if-info">
+              <span class="what-if-title">+ 50 FICO Score</span>
+              <span class="what-if-hint">Monotonicity: Improved credit score reduces risk</span>
+            </div>
+          </button>
+
+          <button type="button" class="what-if-btn" id="btnToggleDefault">
+            <span class="what-if-icon">⚡</span>
+            <div class="what-if-info">
+              <span class="what-if-title">Flip Default History</span>
+              <span class="what-if-hint">Penalty Test: Prior default must trigger risk jump</span>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <!-- Contract Inspector (JSON Request & Response) -->
+      <div class="card inspector-card">
+        <div class="card-header cursor-pointer" id="btnToggleInspector">
+          <div class="flex-row">
+            <span class="code-icon">{ }</span>
+            <div>
+              <h3 class="card-title">API Contract Inspector</h3>
+              <p class="card-subtitle">Inspect raw JSON Request and Response payloads</p>
+            </div>
+          </div>
+          <span class="toggle-indicator" id="inspectorArrow">▼</span>
+        </div>
+
+        <div class="inspector-content" id="inspectorContent">
+          <div class="json-tabs">
+            <button type="button" class="tab-btn active" data-tab="response">Response Payload (200 OK)</button>
+            <button type="button" class="tab-btn" data-tab="request">Request Payload</button>
+          </div>
+          <pre class="code-block"><code id="jsonCodeViewer">{
+  "status": "Ready for inference..."
+}</code></pre>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Settings Modal (Configure Endpoint) -->
+  <div class="modal-backdrop" id="settingsModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">API Connection Settings</h3>
+        <button type="button" class="btn-close" id="btnCloseModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-desc">
+          Configure where the dashboard sends prediction requests. You can connect to your local FastAPI service or an external Cloud instance (e.g. Render / Hugging Face).
+        </p>
+        <div class="form-group">
+          <label for="apiEndpointInput">FastAPI Endpoint Base URL</label>
+          <input type="url" id="apiEndpointInput" value="http://localhost:8000" placeholder="http://localhost:8000">
+        </div>
+        <div class="modal-options">
+          <button type="button" class="btn btn-secondary btn-sm" id="btnSetLocal">Set Localhost (8000)</button>
+          <button type="button" class="btn btn-secondary btn-sm" id="btnSetDemo">Enable Offline Demo Engine</button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="btnCancelModal">Cancel</button>
+        <button type="button" class="btn btn-primary" id="btnSaveEndpoint">Save & Test Connection</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
